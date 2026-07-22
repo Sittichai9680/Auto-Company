@@ -67,10 +67,12 @@ step "4/6 — Apply D1 migrations (remote)"
 npx wrangler d1 migrations apply --remote --env production
 
 step "5/6 — Deploy Worker (production)"
-npx wrangler deploy --env production
+DEPLOY_OUT="$(npx wrangler deploy --env production 2>&1)" || { echo "$DEPLOY_OUT"; exit 1; }
+echo "$DEPLOY_OUT"
 
 step "6/6 — Smoke test the live API"
-URL="$(npx wrangler deploy --env production 2>&1 | grep -oE 'https://snapog[^\s]*\.workers\.dev' | head -1 || true)"
+# ponytail: grep the URL from the single deploy output; no second deploy
+URL="$(printf '%s\n' "$DEPLOY_OUT" | grep -oE 'https://snapog[^\s"]*\.workers\.dev' | head -1 || true)"
 [ -z "$URL" ] && URL="https://snapog.<account>.workers.dev"
 echo "Worker URL: $URL"
 echo "Next: open $URL/register in a browser, get a free key, then:"
