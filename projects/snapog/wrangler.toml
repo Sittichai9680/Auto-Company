@@ -3,6 +3,8 @@ main = "src/index.ts"
 compatibility_date = "2024-11-01"
 compatibility_flags = ["nodejs_compat"]
 
+# Bindings live at top level (used by dev/staging). Production repeats them
+# because wrangler does NOT inherit top-level bindings into named environments.
 [[d1_databases]]
 binding = "DB"
 database_name = "snapog-db"
@@ -18,10 +20,24 @@ ENVIRONMENT = "development"
 
 [env.staging]
 name = "snapog-staging"
+[[env.staging.d1_databases]]
+binding = "DB"
+database_name = "snapog-db"
+database_id = "placeholder-set-after-wrangler-d1-create"
+[[env.staging.r2_buckets]]
+binding = "OG_CACHE"
+bucket_name = "snapog-og-cache"
 [env.staging.vars]
 ENVIRONMENT = "staging"
 
 [env.production]
 name = "snapog"
+[[env.production.d1_databases]]
+binding = "DB"
+database_name = "snapog-db"
+database_id = "placeholder-set-after-wrangler-d1-create"
+[[env.production.r2_buckets]]
+binding = "OG_CACHE"
+bucket_name = "snapog-og-cache"
 [env.production.vars]
 ENVIRONMENT = "production"
