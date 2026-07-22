@@ -63,8 +63,9 @@ else
   echo "R2 bucket exists."
 fi
 
-step "4/6 — Apply D1 migrations (remote)"
-npx wrangler d1 migrations apply --remote --env production
+step "4/6 — Apply D1 migrations (remote, production)"
+# positional <database> is required by wrangler; --remote targets the live DB.
+npx wrangler d1 migrations apply "$DB_NAME" --remote --env production
 
 step "5/6 — Deploy Worker (production)"
 DEPLOY_OUT="$(npx wrangler deploy --env production 2>&1)" || { echo "$DEPLOY_OUT"; exit 1; }
