@@ -131,7 +131,7 @@ app.get('/og', async c => {
         error: 'Monthly image limit reached',
         tier: apiKey.tier,
         limit: apiKey.monthly_limit,
-        upgrade_url: '/register?tier=pro',
+        upgrade_url: 'mailto:hello@snapog.dev?subject=Pro%20plan',
       },
       429
     );
@@ -203,22 +203,24 @@ app.get('/register', c => {
 });
 
 app.post('/register', async c => {
-  let email: string, keyname: string, tier: string;
+  let email: string, keyname: string;
   try {
     const form = await c.req.formData();
     email = (form.get('email') as string ?? '').trim().toLowerCase();
     keyname = (form.get('keyname') as string ?? '').trim() || 'default';
-    tier = (form.get('tier') as string ?? 'free').trim();
   } catch {
     return htmlResponse(registerPage('Invalid form data'), 400);
   }
 
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    return htmlResponse(registerPage('Please enter a valid email address', tier), 400);
+    return htmlResponse(registerPage('Please enter a valid email address'), 400);
   }
 
-  const validTiers: Tier[] = ['free', 'pro', 'business'];
-  const safeTier: Tier = validTiers.includes(tier as Tier) ? (tier as Tier) : 'free';
+  // Trust boundary: self-registration may only mint FREE keys.
+  // ponytail: paid tiers (pro/business) must be gated behind payment before this
+  // branch is widened; until a billing integration exists, every client-supplied
+  // tier is forced to 'free'. One guard here covers all key-creation paths.
+  const safeTier: Tier = 'free';
 
   // Upsert user
   const userId = crypto.randomUUID();

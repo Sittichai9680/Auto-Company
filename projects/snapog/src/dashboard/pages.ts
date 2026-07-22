@@ -543,7 +543,7 @@ export function landingPage(host: string): string {
             <li>Priority support</li>
           </ul>
           <div class="pricing-cta">
-            <a href="/register?tier=pro" class="btn btn-primary" style="width:100%;">Start Pro →</a>
+            <a href="mailto:hello@snapog.dev?subject=Pro%20plan" class="btn btn-primary" style="width:100%;">Start Pro →</a>
           </div>
         </div>
 
@@ -721,7 +721,7 @@ export function dashboardPage(key: ApiKey, recentCount: number): string {
             key.tier === 'free'
               ? `<div style="margin-top:20px;padding-top:20px;border-top:1px solid var(--border);">
                    <p style="font-size:13px;color:var(--text-2);">Need more?</p>
-                   <a href="/register?tier=pro" class="btn btn-primary" style="margin-top:10px;">Upgrade to Pro — $19/mo →</a>
+                   <a href="mailto:hello@snapog.dev?subject=Pro%20plan" class="btn btn-primary" style="margin-top:10px;">Upgrade to Pro — $19/mo →</a>
                  </div>`
               : ''
           }
